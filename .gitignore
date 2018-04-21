@@ -17,6 +17,7 @@
 .idea/**/sqlDataSources.xml
 .idea/**/dynamic.xml
 .idea/**/uiDesigner.xml
+.idea/**/*.xml
 
 # Gradle:
 .idea/**/gradle.xml
@@ -92,5 +93,6 @@ hs_err_pid*
 
 # End of https://www.gitignore.io/api/java,intellij
 .idea/
+.idea/*
 .gradle/
 build/
