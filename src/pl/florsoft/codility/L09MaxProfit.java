@@ -1,5 +1,8 @@
 package pl.florsoft.codility;
 
+/**
+ * Task: https://app.codility.com/programmers/lessons/9-maximum_slice_problem/max_profit/
+ */
 public class L09MaxProfit {
 
     public int solution(int[] A) {
