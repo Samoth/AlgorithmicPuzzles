@@ -6,8 +6,7 @@ package pl.florsoft.codility;
 public class L08Dominator2 {
 
     public int solution(int[] A) {
-        Integer candidate = null;
-        int occurs = 0;
+        int candidate = 0, occurs = 0;
         for (int i = 0; i < A.length; i++) {
             if (occurs == 0) {
                 candidate = A[i];
