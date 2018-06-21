@@ -1,7 +1,6 @@
 package pl.florsoft.codility;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 /**
  * Task: https://app.codility.com/programmers/lessons/6-sorting/number_of_disc_intersections/
@@ -9,38 +8,21 @@ import java.util.List;
 public class L06NumberOfDiscIntersections {
 
     public int solution(int[] A) {
-        List<Disc> discsSt = createList(A);
-        List<Disc> discsEn = new ArrayList<>(discsSt);
-        discsSt.sort((o1, o2) -> {
-            int result = o1.startPos.compareTo(o2.startPos);
-            if (result == 0) {
-                return o1.endPos.compareTo(o2.endPos);
-            }
-            return result;
-        });
-        discsEn.sort((o1, o2) -> {
-            int result = o1.endPos.compareTo(o2.endPos);
-            if (result == 0) {
-                return o1.startPos.compareTo(o2.startPos);
-            }
-            return result;
-        });
+        int[] discsSt = new int[A.length];
+        int[] discsEn = new int[A.length];
+        for (int i = 0; i < A.length; i++) {
+            discsSt[i] = Math.max(0, i - A[i]);
+            discsEn[i] = (int) Math.min((long) A.length - 1, ((long) i + (long) A[i]));
+        }
+        Arrays.sort(discsSt);
+        Arrays.sort(discsEn);
         return countElements(discsSt, discsEn);
     }
 
-    private static List<Disc> createList(int[] A) {
-        List<Disc> list = new ArrayList<>(A.length);
-        for (int i = 0; i < A.length; i++) {
-            list.add(new Disc(Math.max(0, i - A[i]),
-                    (int) Math.min((long) A.length - 1, ((long) i + (long) A[i]))));
-        }
-        return list;
-    }
-
-    private static int countElements(List<Disc> discsSt, List<Disc> discsEn) {
+    private static int countElements(int[] discsSt, int[] discsEn) {
         int count = 0, currentItems = 0, endIdx = 0;
-        for (Disc disc : discsSt) {
-            while (disc.startPos > discsEn.get(endIdx).endPos) {
+        for (int disc : discsSt) {
+            while (disc > discsEn[endIdx]) {
                 endIdx++;
                 currentItems--;
                 count += currentItems;
@@ -58,16 +40,6 @@ public class L06NumberOfDiscIntersections {
             }
         }
         return count;
-    }
-
-    static class Disc {
-        Integer startPos;
-        Integer endPos;
-
-        Disc(Integer startPos, Integer endPos) {
-            this.startPos = startPos;
-            this.endPos = endPos;
-        }
     }
 
 }
