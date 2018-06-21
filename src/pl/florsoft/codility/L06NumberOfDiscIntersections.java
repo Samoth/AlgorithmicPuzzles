@@ -1,6 +1,9 @@
 package pl.florsoft.codility;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Task: https://app.codility.com/programmers/lessons/6-sorting/number_of_disc_intersections/
@@ -8,9 +11,24 @@ import java.util.*;
 public class L06NumberOfDiscIntersections {
 
     public int solution(int[] A) {
-        List<Disc> discs = createList(A);
-        Collections.sort(discs);
-        return countElements(discs);
+        List<Disc> discsSt = createList(A);
+        List<Disc> discsEn = new ArrayList<>();
+        Collections.copy(discsEn, discsSt);
+        discsSt.sort((o1, o2) -> {
+            int result = o1.startPos.compareTo(o2.startPos);
+            if (result == 0) {
+                return o1.endPos.compareTo(o2.endPos);
+            }
+            return result;
+        });
+        discsEn.sort((o1, o2) -> {
+            int result = o1.endPos.compareTo(o2.endPos);
+            if (result == 0) {
+                return o1.startPos.compareTo(o2.startPos);
+            }
+            return result;
+        });
+        return countElements(discsSt, discsEn);
     }
 
     private static List<Disc> createList(int[] A) {
@@ -22,39 +40,31 @@ public class L06NumberOfDiscIntersections {
         return list;
     }
 
-    private static int countElements(List<Disc> discs) {
-        int count = 0;
-        PriorityQueue<Disc> queue = new PriorityQueue<>(Comparator.comparing(o -> o.endPos));
+    private static int countElements(List<Disc> discs, List<Disc> descendingDiscs) {
+        int count = 0, currentItems = 0, endIdx = 0;
         for (Disc disc : discs) {
-            while (queue.size() > 0 && queue.peek().endPos < disc.startPos) {
-                queue.poll();
-                count += queue.size();
+            currentItems++;
+            while (disc.startPos > descendingDiscs.get(endIdx).endPos) {
+                // TODO check it and fix
+                endIdx++;
+                currentItems--;
+                count += currentItems;
             }
-            queue.add(disc);
         }
-        while (queue.size() > 0) {
-            queue.poll();
-            count += queue.size();
-        }
+//        while (!queue.isEmpty()) {
+//            queue.poll();
+//            count += queue.size();
+//        }
         return count;
     }
 
-    static class Disc implements Comparable<Disc> {
+    static class Disc {
         Integer startPos;
         Integer endPos;
 
-        public Disc(Integer startPos, Integer endPos) {
+        Disc(Integer startPos, Integer endPos) {
             this.startPos = startPos;
             this.endPos = endPos;
-        }
-
-        @Override
-        public int compareTo(Disc o) {
-            int result = this.startPos.compareTo(o.startPos);
-            if (result == 0) {
-                return this.endPos.compareTo(o.endPos);
-            }
-            return result;
         }
     }
 }
