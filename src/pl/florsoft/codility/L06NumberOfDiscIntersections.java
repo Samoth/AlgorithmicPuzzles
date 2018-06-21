@@ -44,12 +44,18 @@ public class L06NumberOfDiscIntersections {
                 endIdx++;
                 currentItems--;
                 count += currentItems;
+                if (count > 10000000) {
+                    return -1;
+                }
             }
             currentItems++;
         }
         while (currentItems != 0) {
             currentItems--;
             count += currentItems;
+            if (count > 10000000) {
+                return -1;
+            }
         }
         return count;
     }
@@ -63,5 +69,5 @@ public class L06NumberOfDiscIntersections {
             this.endPos = endPos;
         }
     }
-    
+
 }
