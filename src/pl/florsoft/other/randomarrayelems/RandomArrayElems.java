@@ -26,6 +26,18 @@ public class RandomArrayElems {
         return bufferMap.get(idx) != null ? bufferMap.get(idx) : array[idx];
     }
 
+    private static Integer[] generateRandomIntegersFromArrayByWW(int m, Integer[] array) {
+        Random random = new Random();
+        Integer[] resultArray = new Integer[m];
+        int outputIdx = 0;
+        for (int i = 0; i < array.length && outputIdx < m; i++) {
+            if (random.nextInt(array.length - i) < m - outputIdx) {
+                resultArray[outputIdx++] = array[i];
+            }
+        }
+        return resultArray;
+    }
+
     // tests
     public static void main(String[] args) {
         int arrayLength = 1000;
