@@ -2,6 +2,8 @@ package pl.florsoft.other.randomarrayelems;
 
 public interface RandomGenerator<T> {
 
-    T[] generateFromArray(int m, T[] array);
+    T[] getRandomElemsFromArray(int m, T[] array);
+
+    T[] prepareUniqueArray(int arrayLength);
 
 }
