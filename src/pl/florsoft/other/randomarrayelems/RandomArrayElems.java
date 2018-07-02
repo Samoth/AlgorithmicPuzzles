@@ -1,6 +1,5 @@
 package pl.florsoft.other.randomarrayelems;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -29,11 +28,29 @@ public class RandomArrayElems {
 
     // tests
     public static void main(String[] args) {
-        Integer[] array = {3, 4, 1, 6, 4, 7, 234, 6, 2, 5, 11, 53, 2343242, Integer.MAX_VALUE, 34, -4, -1, 0, 0};
-        int randomNumbers = 7;
-        TestMachine testMachine = new TestMachine((RandomGenerator<Integer>) RandomArrayElems::generateRandomIntegersFromArray,
-                randomNumbers, array.length);
-        Integer[] results = generateRandomIntegersFromArray(randomNumbers, array);
-        System.out.println(Arrays.toString(results));
+        int arrayLength = 1000;
+        int randomObjs = 200;
+        int testCount = 1000000;
+        RandomGenerator<Integer> randomGenerator = new RandomGenerator<Integer>() {
+
+            @Override
+            public Integer[] getRandomElemsFromArray(int m, Integer[] array) {
+                return generateRandomIntegersFromArray(m, array);
+            }
+
+            @Override
+            public Integer[] prepareUniqueArray(int arrayLength) {
+                Integer[] array = new Integer[arrayLength];
+                for (int i = 0; i < arrayLength; i++) {
+                    array[i] = i;
+                }
+                return array;
+            }
+        };
+        TestMachine testMachine = new TestMachine<Integer>(randomGenerator, randomObjs, arrayLength);
+        TestResult result = testMachine.startTesting(testCount);
+        System.out.println(String.format("N = %d, M = %d, testCount = %d", arrayLength, randomObjs, testCount));
+        System.out.println(String.format("AVG occurrences = %d, MIN occurrences = %d, MAX occurences = %d",
+                result.avgOccurrences, result.minOccurrences, result.maxOccurrences));
     }
 }
