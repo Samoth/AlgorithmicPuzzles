@@ -47,7 +47,7 @@ public class RandomArrayElems {
 
             @Override
             public Integer[] getRandomElemsFromArray(int m, Integer[] array) {
-                return generateRandomIntegersFromArray(m, array);
+                return generateRandomIntegersFromArrayByWW(m, array);
             }
 
             @Override
