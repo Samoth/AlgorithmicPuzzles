@@ -1,5 +1,7 @@
 package pl.florsoft.other.randomarrayelems;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,18 +27,24 @@ public class TestMachine<T> {
         }
     }
 
-    public TestResult startTesting() {
-        return startTesting(DEFAULT_TEST_COUNT);
+    public TestResult startTesting(boolean printExecutionTime) {
+        return startTesting(printExecutionTime, DEFAULT_TEST_COUNT);
     }
 
-    public TestResult startTesting(int testCount) {
+    public TestResult startTesting(boolean printExecutionTime, int testCount) {
         T[] uniqueArray = randomGenerator.prepareUniqueArray(arraysLength);
         initOccurrencesMap(uniqueArray);
+        Instant startTime = Instant.now();
         for (int i = 0; i < testCount; i++) {
             T[] randomObjs = randomGenerator.getRandomElemsFromArray(randomElems, uniqueArray);
             storeOccurences(randomObjs);
         }
-        return collectTestResult();
+        TestResult testResult = collectTestResult();
+        Instant endTime = Instant.now();
+        if (printExecutionTime) {
+            System.out.println("Test execution time: " + ((double) Duration.between(startTime, endTime).toMillis() / 1000) + " sec");
+        }
+        return testResult;
     }
 
     private TestResult collectTestResult() {

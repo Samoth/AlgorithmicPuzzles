@@ -60,7 +60,7 @@ public class RandomArrayElems {
             }
         };
         TestMachine testMachine = new TestMachine<Integer>(randomGenerator, randomObjs, arrayLength);
-        TestResult result = testMachine.startTesting(testCount);
+        TestResult result = testMachine.startTesting(true, testCount);
         System.out.println(String.format("N = %d, M = %d, testCount = %d", arrayLength, randomObjs, testCount));
         System.out.println(String.format("AVG occurrences = %d, MIN occurrences = %d, MAX occurences = %d",
                 result.avgOccurrences, result.minOccurrences, result.maxOccurrences));
