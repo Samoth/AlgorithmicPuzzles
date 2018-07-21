@@ -6,6 +6,28 @@ package pl.florsoft.other.findduplicate;
  */
 public class FindDuplicateInArray {
 
+    public static int findDuplicate(int[] A) {
+        int startElem = A[A.length - 1];
+        if (A[startElem] == startElem) {
+            return startElem;
+        }
+        int slow = startElem, fast = startElem;
+        do {
+            slow = getNextVal(A, slow);
+            fast = getNextVal(A, getNextVal(A, fast));
+        } while (slow != fast);
+        slow = startElem;
+        while (slow != fast) {
+            slow = getNextVal(A, slow);
+            fast = getNextVal(A, fast);
+        }
+        return fast;
+    }
+
+    private static int getNextVal(int[] A, int index) {
+        return A[index];
+    }
+
     /**
      * Only one duplicate exists.
      */
@@ -42,17 +64,15 @@ public class FindDuplicateInArray {
 
     public static void main(String[] args) {
         int[] testArray = new int[]{1, 1};
-        System.out.println("1 ?= " + findDuplicateForSmallArray(testArray));
+        System.out.println("1 ?= " + findDuplicate(testArray));
         int[] testArray2 = new int[]{0, 1, 2, 3, 0};
-        System.out.println("0 ?= " + findDuplicateForSmallArray(testArray2));
-        int[] testArray3 = new int[]{5, 3, 2, 4, 1, 4, 0};
-        System.out.println("4 ?= " + findDuplicateForSmallArray(testArray3));
-        int[] testArray4 = new int[65];
-        for (int i = 0; i < testArray4.length - 1; i++) {
-            testArray4[i] = i;
-        }
-        testArray4[64] = 56;
-        System.out.println("56 ?= " + findDuplicateForSmallArray(testArray4));
+        System.out.println("0 ?= " + findDuplicate(testArray2));
+        int[] testArray3 = new int[]{5, 3, 2, 5, 1, 4, 0};
+        System.out.println("5 ?= " + findDuplicate(testArray3));
+        int[] testArray4 = new int[]{6, 1, 4, 2, 2, 3, 0, 5};
+        System.out.println("2 ?= " + findDuplicate(testArray4));
+        int[] testArray5 = new int[]{2, 1, 3, 0, 0, 0, 2};
+        System.out.println("2 ?= " + findDuplicate(testArray5));
     }
 
 }
