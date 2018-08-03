@@ -63,30 +63,6 @@ public class FindDuplicateInArray {
         }
     }
 
-    private static int findDuplicateUsingCount(int[] A, int min, int max) {
-        if (min == max) {
-            return min;
-        } else if (min > max) {
-            throw new IllegalArgumentException("Incorrect array. No duplicates.");
-        }
-        int left = 0, right = 0;
-        int middleElem = (min + max) / 2;
-        for (int val : A) {
-            if (val >= min && val <= max) {
-                if (val > middleElem) {
-                    right++;
-                } else {
-                    left++;
-                }
-            }
-        }
-        if (left >= right) {
-            return findDuplicateUsingCount(A, min, middleElem);
-        } else {
-            return findDuplicateUsingCount(A, middleElem + 1, max);
-        }
-    }
-
     /**
      * Only one duplicate exists.
      */
