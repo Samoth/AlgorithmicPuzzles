@@ -27,7 +27,7 @@ public class TestBufferManager implements BufferManager<Long> {
     @Override
     public BufferWriter<Long> getBufferWriter(int fileGroup, boolean useBuffer) {
         if (!createdFiles.containsKey(fileGroup)) {
-            createdFiles.put(fileGroup, 0);
+            createdFiles.put(fileGroup, -1);
         }
         Integer files = createdFiles.get(fileGroup);
         createdFiles.put(fileGroup, ++files);

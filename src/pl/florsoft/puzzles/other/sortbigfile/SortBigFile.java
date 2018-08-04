@@ -4,7 +4,6 @@ import pl.florsoft.puzzles.other.sortbigfile.testimpl.OutputChecker;
 import pl.florsoft.puzzles.other.sortbigfile.testimpl.RandomLongGenerator;
 import pl.florsoft.puzzles.other.sortbigfile.testimpl.TestBufferManager;
 
-import java.io.IOException;
 import java.util.Arrays;
 
 /**
@@ -62,10 +61,10 @@ public class SortBigFile {
 
     private void mergeAndWriteToOutput(int files, int fileGroup, Writer<Long> outputWriter, BufferManager<Long> bufferManager) {
         if (files <= 2) {
-            BufferReader<Long> firstReader = bufferManager.getBufferReader(fileGroup, 1);
+            BufferReader<Long> firstReader = bufferManager.getBufferReader(fileGroup, 0);
             BufferReader<Long> secondReader = null;
             if (files == 2) {
-                secondReader = bufferManager.getBufferReader(fileGroup, 2);
+                secondReader = bufferManager.getBufferReader(fileGroup, 1);
             }
             writeToOutput(outputWriter, firstReader, secondReader);
             return;
@@ -73,11 +72,11 @@ public class SortBigFile {
         int currentFile = 0, outputFiles = 0;
         while (files > 0) {
             BufferWriter<Long> output = bufferManager.getBufferWriter(fileGroup + 1, true);
-            BufferReader<Long> firstReader = bufferManager.getBufferReader(fileGroup, ++currentFile);
+            BufferReader<Long> firstReader = bufferManager.getBufferReader(fileGroup, currentFile++);
             BufferReader<Long> secondReader = null;
             files--;
             if (files > 0) {
-                secondReader = bufferManager.getBufferReader(fileGroup, ++currentFile);
+                secondReader = bufferManager.getBufferReader(fileGroup, currentFile++);
                 files--;
             }
             writeToOutput(output, firstReader, secondReader);
@@ -109,7 +108,7 @@ public class SortBigFile {
         }
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         int longNumbersInBigFile = 10000000;
         long maxMemUsage = 1000000L; // 1000kB
         new SortBigFile().sortLargeFileOfInt64s(new RandomLongGenerator(longNumbersInBigFile),
