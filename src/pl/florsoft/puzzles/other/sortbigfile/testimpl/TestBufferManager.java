@@ -1,13 +1,33 @@
 package pl.florsoft.puzzles.other.sortbigfile.testimpl;
 
 import pl.florsoft.puzzles.other.sortbigfile.BufferManager;
+import pl.florsoft.puzzles.other.sortbigfile.BufferReader;
 import pl.florsoft.puzzles.other.sortbigfile.BufferWriter;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class TestBufferManager implements BufferManager<Long> {
 
+    private Map<Integer, Integer> createdFiles = new HashMap<>();
+
     @Override
-    public BufferWriter<Long> getBufferWriter() {
-        return new TestBufferWriter();
+    public BufferReader<Long> getBufferReader(int group, int number) {
+        return new TestBufferReader(createFileName(group, number));
+    }
+
+    @Override
+    public BufferWriter<Long> getBufferWriter(int fileGroup) {
+        if (!createdFiles.containsKey(fileGroup)) {
+            createdFiles.put(fileGroup, 0);
+        }
+        Integer files = createdFiles.get(fileGroup);
+        createdFiles.put(fileGroup, ++files);
+        return new TestBufferWriter(createFileName(fileGroup, files), files);
+    }
+
+    private String createFileName(int fileGroup, int fileNumber) {
+        return "sorted-file-" + fileGroup + "-" + fileNumber + ".long";
     }
 
 }

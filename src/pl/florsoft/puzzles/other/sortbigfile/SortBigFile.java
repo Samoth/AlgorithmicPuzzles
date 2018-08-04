@@ -5,7 +5,7 @@ import pl.florsoft.puzzles.other.sortbigfile.testimpl.RandomLongGenerator;
 import pl.florsoft.puzzles.other.sortbigfile.testimpl.TestBufferManager;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
 
 /**
  * Task: write a method to sort big file (bigger than available memory).
@@ -17,77 +17,78 @@ public class SortBigFile {
      */
     void sortLargeFileOfInt64s(Reader<Long> inputReader, Writer<Long> outputWriter, BufferManager<Long> bufferManager,
                                long maxMemUsage) {
-        List<BufferReader<Long>> sortedTmpFiles = createSortedTmpFiles(inputReader, bufferManager, maxMemUsage);
-        mergeAndWriteToOutput(sortedTmpFiles, outputWriter, maxMemUsage);
+        int sortedTmpFiles = createSortedTmpFiles(inputReader, bufferManager, maxMemUsage);
+        mergeAndWriteToOutput(sortedTmpFiles, 0, outputWriter, bufferManager);
     }
 
-    private List<BufferReader<Long>> createSortedTmpFiles(Reader<Long> inputReader, BufferManager<Long> bufferManager,
-                                                          long maxMemUsage) {
-        List<BufferReader<Long>> tmpFiles = new ArrayList<>();
+    private int createSortedTmpFiles(Reader<Long> inputReader, BufferManager<Long> bufferManager,
+                                     long maxMemUsage) {
         int maxElemsInOneFile = (int) (maxMemUsage / (Long.SIZE / Byte.SIZE));
-        List<Long> tmpBuffer = new ArrayList<>(maxElemsInOneFile);
+        Long[] tmpBuffer = new Long[maxElemsInOneFile];
         Long currentVal;
+        int savedValsInBuffer = 0, files = 0;
         while ((currentVal = inputReader.read()) != null) {
-            tmpBuffer.add(currentVal);
-            if (tmpBuffer.size() == maxElemsInOneFile) {
-                tmpFiles.add(saveToSortedFile(tmpBuffer, bufferManager));
-                tmpBuffer.clear();
+            tmpBuffer[savedValsInBuffer++] = currentVal;
+            if (savedValsInBuffer == maxElemsInOneFile) {
+                saveToSortedFile(tmpBuffer, bufferManager);
+                files++;
+                savedValsInBuffer = 0;
             }
         }
-        if (!tmpBuffer.isEmpty()) {
-            tmpFiles.add(saveToSortedFile(tmpBuffer, bufferManager));
-            tmpBuffer.clear();
+        if (savedValsInBuffer > 0) {
+            if (savedValsInBuffer < maxElemsInOneFile) {
+                tmpBuffer = createSmallerBuffer(tmpBuffer, savedValsInBuffer);
+            }
+            saveToSortedFile(tmpBuffer, bufferManager);
+            files++;
         }
-        return tmpFiles;
+        return files;
     }
 
-    private BufferReader<Long> saveToSortedFile(List<Long> tmpBuffer, BufferManager<Long> bufferManager) {
-        Collections.sort(tmpBuffer);
-        BufferWriter<Long> bufferWriter = bufferManager.getBufferWriter();
-        for (Long val: tmpBuffer) {
+    private Long[] createSmallerBuffer(Long[] tmpBuffer, int savedValsInBuffer) {
+        Long[] newArray = new Long[savedValsInBuffer];
+        System.arraycopy(tmpBuffer, 0, newArray, 0, savedValsInBuffer);
+        return newArray;
+    }
+
+    private void saveToSortedFile(Long[] tmpBuffer, BufferManager<Long> bufferManager) {
+        Arrays.sort(tmpBuffer);
+        BufferWriter<Long> bufferWriter = bufferManager.getBufferWriter(0);
+        for (Long val : tmpBuffer) {
             bufferWriter.write(val);
         }
-        return bufferWriter.reopenAsReader();
+        bufferWriter.endWriting();
     }
 
-    private void mergeAndWriteToOutput(List<BufferReader<Long>> files, Writer<Long> outputWriter, long maxMemUsage) {
-        Queue<FileValue> currentMinVals = initHeap(files, maxMemUsage);
-        while (!currentMinVals.isEmpty()) {
-            FileValue value = currentMinVals.poll();
-            outputWriter.write(value.val);
-            Long newVal = files.get(value.fileNumber).read();
-            if (newVal != null) {
-                currentMinVals.add(new FileValue(value.fileNumber, newVal));
+    private void mergeFiles(int files, int fileGroup, Writer<Long> outputWriter, BufferManager<Long> bufferManager) {
+        if (files == 2) {
+            writeToOutput(fileGroup, outputWriter, bufferManager);
+            return;
+        }
+        int currentFile = 0;
+        while (files > 0) {
+            BufferWriter<Long> output = bufferManager.getBufferWriter(fileGroup + 1);
+            BufferReader<Long> firstReader = bufferManager.getBufferReader(fileGroup, ++currentFile);
+            files--;
+            if (files > 0) {
+                BufferReader<Long> secondReader = bufferManager.getBufferReader(fileGroup, ++currentFile);
+                files--;
+
+            } else {
+                // TODO
+//                output.write();
             }
+            files -= 2;
         }
+        // TODO
+//        mergeAndWriteToOutput();
     }
 
-    private Queue<FileValue> initHeap(List<BufferReader<Long>> files, long maxMemUsage) {
-        int maxElems = (int) (maxMemUsage / (Long.SIZE / Byte.SIZE));
-        int maxElemsFromOneFile = maxElems / files.size();
-        Queue<FileValue> heap = new PriorityQueue<>(maxElems);
-        for (int fileNum = 0; fileNum < files.size(); fileNum++) {
-            BufferReader<Long> file = files.get(fileNum);
-            for (int i = 0; i < maxElemsFromOneFile; i++) {
-                heap.add(new FileValue(fileNum, file.read()));
-            }
-        }
-        return heap;
-    }
-
-    class FileValue implements Comparable<FileValue> {
-        int fileNumber;
-        Long val;
-
-        public FileValue(int fileNumber, Long val) {
-            this.fileNumber = fileNumber;
-            this.val = val;
-        }
-
-        @Override
-        public int compareTo(FileValue o) {
-            return val.compareTo(o.val);
-        }
+    private void writeToOutput(int fileGroup, Writer<Long> outputWriter, BufferManager<Long> bufferManager) {
+        BufferReader<Long> firstReader = bufferManager.getBufferReader(fileGroup, 1);
+        BufferReader<Long> secondReader = bufferManager.getBufferReader(fileGroup, 2);
+        // TODO
+        outputWriter.write(val);
     }
 
     public static void main(String[] args) throws IOException {

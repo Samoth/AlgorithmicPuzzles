@@ -1,10 +1,10 @@
 package pl.florsoft.puzzles.other.sortbigfile.testimpl;
 
-import pl.florsoft.puzzles.other.sortbigfile.BufferReader;
 import pl.florsoft.puzzles.other.sortbigfile.BufferWriter;
 import pl.florsoft.puzzles.other.sortbigfile.ByteUtils;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -13,34 +13,38 @@ public class TestBufferWriter implements BufferWriter<Long> {
 
     private Path filePath;
     private ByteArrayOutputStream output;
-    private int numberCount;
+    private int fileNumber;
 
-    public TestBufferWriter() {
+    public TestBufferWriter(String fileName, int fileNumber) {
+        this.fileNumber = fileNumber;
         try {
-            this.filePath = Files.createTempFile("sorted-file-", ".long");
+            File baseDir = new File(System.getProperty("java.io.tmpdir"));
+            File file = new File(baseDir, fileName);
+            file.deleteOnExit();
+            this.filePath = file.toPath();
             this.output = new ByteArrayOutputStream();
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new RuntimeException("Error in TestBufferWriter(): " + e.getLocalizedMessage());
         }
-    }
-
-    @Override
-    public BufferReader<Long> reopenAsReader() {
-        try {
-            Files.write(filePath, output.toByteArray());
-        } catch (IOException e) {
-            throw new RuntimeException("Error in reopenAsReader(): " + e.getLocalizedMessage());
-        }
-        return new TestBufferReader(filePath, numberCount);
     }
 
     @Override
     public void write(Long val) {
         try {
             output.write(ByteUtils.longToBytes(val));
-            numberCount++;
         } catch (IOException e) {
             throw new RuntimeException("Error in write(): " + e.getLocalizedMessage());
         }
     }
+
+    @Override
+    public int endWriting() {
+        try {
+            Files.write(filePath, output.toByteArray());
+            return fileNumber;
+        } catch (IOException e) {
+            throw new RuntimeException("Error in reopenAsReader(): " + e.getLocalizedMessage());
+        }
+    }
+
 }

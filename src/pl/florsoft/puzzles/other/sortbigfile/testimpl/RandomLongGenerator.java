@@ -14,7 +14,6 @@ public class RandomLongGenerator implements Reader<Long> {
         this.numbersToGenerate = numbersToGenerate;
     }
 
-
     @Override
     public Long read() {
         if (generatedNumbers >= numbersToGenerate) {
@@ -22,11 +21,6 @@ public class RandomLongGenerator implements Reader<Long> {
         }
         generatedNumbers++;
         return random.nextLong();
-    }
-
-    @Override
-    public void restart() {
-        generatedNumbers = 0;
     }
 
 }

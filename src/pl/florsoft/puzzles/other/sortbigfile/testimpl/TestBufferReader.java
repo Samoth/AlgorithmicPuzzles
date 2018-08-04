@@ -7,17 +7,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Path;
 
 public class TestBufferReader implements BufferReader<Long> {
 
     private File file;
     private FileInputStream fis;
-    private int numberCount;
 
-    public TestBufferReader(Path filePath, int numberCount) {
-        this.numberCount = numberCount;
-        file = filePath.toFile();
+    public TestBufferReader(String fileName) {
+        File baseDir = new File(System.getProperty("java.io.tmpdir"));
+        file = new File(baseDir, fileName);
         try {
             fis = new FileInputStream(file);
         } catch (FileNotFoundException e) {
@@ -32,30 +30,22 @@ public class TestBufferReader implements BufferReader<Long> {
             file.delete();
             this.finalize();
         } catch (Throwable throwable) {
-            System.out.println("Cannot finalize!");
+            throw new RuntimeException("Cannot finalize!");
         }
     }
 
     @Override
     public Long read() {
-        if (--numberCount < 0) {
-            discard();
-            return null;
-        }
         byte[] bytesArray = new byte[Long.BYTES];
         Long val = null;
         try {
             fis.read(bytesArray);
             val = ByteUtils.bytesToLong(bytesArray);
+            return val;
         } catch (IOException e) {
-            throw new RuntimeException("Error in read():" + e.getLocalizedMessage());
+            discard();
+            return null;
         }
-        return val;
-    }
-
-    @Override
-    public void restart() {
-        // no impl
     }
 
 }
