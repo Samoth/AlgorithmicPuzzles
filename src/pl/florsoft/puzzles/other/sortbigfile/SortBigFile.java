@@ -109,7 +109,7 @@ public class SortBigFile {
         }
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args){
         int longNumbersInBigFile = 10000000;
         long maxMemUsage = 1000000L; // 1000kB
         new SortBigFile().sortLargeFileOfInt64s(new RandomLongGenerator(longNumbersInBigFile),

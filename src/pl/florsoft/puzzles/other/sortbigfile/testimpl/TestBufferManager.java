@@ -11,7 +11,7 @@ import java.util.UUID;
 public class TestBufferManager implements BufferManager<Long> {
 
     private Map<Integer, Integer> createdFiles = new HashMap<>();
-    private long maxMemoryToUse = 0;
+    private long maxMemoryToUse;
     private long uuid;
 
     public TestBufferManager(long maxMemoryToUse) {
