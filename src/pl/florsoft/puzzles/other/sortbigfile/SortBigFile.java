@@ -15,8 +15,8 @@ public class SortBigFile {
     /**
      * @param maxMemUsage - max memory in bytes
      */
-    void sortLargeFileOfInt64s(Reader<Long> inputReader, Writer<Long> outputWriter, BufferManager<Long> bufferManager,
-                               long maxMemUsage) {
+    public void sortLargeFileOfInt64s(Reader<Long> inputReader, Writer<Long> outputWriter, BufferManager<Long> bufferManager,
+                                      long maxMemUsage) {
         int sortedTmpFiles = createSortedTmpFiles(inputReader, bufferManager, maxMemUsage);
         mergeAndWriteToOutput(sortedTmpFiles, 0, outputWriter, bufferManager);
     }
@@ -53,49 +53,67 @@ public class SortBigFile {
 
     private void saveToSortedFile(Long[] tmpBuffer, BufferManager<Long> bufferManager) {
         Arrays.sort(tmpBuffer);
-        BufferWriter<Long> bufferWriter = bufferManager.getBufferWriter(0);
+        BufferWriter<Long> bufferWriter = bufferManager.getBufferWriter(0, false);
         for (Long val : tmpBuffer) {
             bufferWriter.write(val);
         }
         bufferWriter.endWriting();
     }
 
-    private void mergeFiles(int files, int fileGroup, Writer<Long> outputWriter, BufferManager<Long> bufferManager) {
-        if (files == 2) {
-            writeToOutput(fileGroup, outputWriter, bufferManager);
+    private void mergeAndWriteToOutput(int files, int fileGroup, Writer<Long> outputWriter, BufferManager<Long> bufferManager) {
+        if (files <= 2) {
+            BufferReader<Long> firstReader = bufferManager.getBufferReader(fileGroup, 1);
+            BufferReader<Long> secondReader = null;
+            if (files == 2) {
+                secondReader = bufferManager.getBufferReader(fileGroup, 2);
+            }
+            writeToOutput(outputWriter, firstReader, secondReader);
             return;
         }
-        int currentFile = 0;
+        int currentFile = 0, outputFiles = 0;
         while (files > 0) {
-            BufferWriter<Long> output = bufferManager.getBufferWriter(fileGroup + 1);
+            BufferWriter<Long> output = bufferManager.getBufferWriter(fileGroup + 1, true);
             BufferReader<Long> firstReader = bufferManager.getBufferReader(fileGroup, ++currentFile);
+            BufferReader<Long> secondReader = null;
             files--;
             if (files > 0) {
-                BufferReader<Long> secondReader = bufferManager.getBufferReader(fileGroup, ++currentFile);
+                secondReader = bufferManager.getBufferReader(fileGroup, ++currentFile);
                 files--;
-
-            } else {
-                // TODO
-//                output.write();
             }
-            files -= 2;
+            writeToOutput(output, firstReader, secondReader);
+            output.endWriting();
+            outputFiles++;
         }
-        // TODO
-//        mergeAndWriteToOutput();
+        mergeAndWriteToOutput(outputFiles, fileGroup + 1, outputWriter, bufferManager);
     }
 
-    private void writeToOutput(int fileGroup, Writer<Long> outputWriter, BufferManager<Long> bufferManager) {
-        BufferReader<Long> firstReader = bufferManager.getBufferReader(fileGroup, 1);
-        BufferReader<Long> secondReader = bufferManager.getBufferReader(fileGroup, 2);
-        // TODO
-        outputWriter.write(val);
+    private void writeToOutput(Writer<Long> outputWriter, BufferReader<Long> firstReader, BufferReader<Long> secondReader) {
+        Long firstVal = firstReader.read();
+        Long secVal = secondReader != null ? secondReader.read() : null;
+        while (firstVal != null || secVal != null) {
+            if (firstVal != null && secVal != null) {
+                if (firstVal <= secVal) {
+                    outputWriter.write(firstVal);
+                    firstVal = firstReader.read();
+                } else {
+                    outputWriter.write(secVal);
+                    secVal = secondReader.read();
+                }
+            } else if (firstVal != null) {
+                outputWriter.write(firstVal);
+                firstVal = firstReader.read();
+            } else {
+                outputWriter.write(secVal);
+                secVal = secondReader.read();
+            }
+        }
     }
 
     public static void main(String[] args) throws IOException {
-        int longNumbersInBigFile = 1000000;
-        long maxMemUsage = 10000L; // 10kB
+        int longNumbersInBigFile = 10000000;
+        long maxMemUsage = 1000000L; // 1000kB
         new SortBigFile().sortLargeFileOfInt64s(new RandomLongGenerator(longNumbersInBigFile),
-                new OutputChecker(), new TestBufferManager(), maxMemUsage);
+                new OutputChecker(), new TestBufferManager(maxMemUsage), maxMemUsage);
     }
 
 }

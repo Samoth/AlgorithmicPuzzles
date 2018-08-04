@@ -39,12 +39,14 @@ public class TestBufferReader implements BufferReader<Long> {
         byte[] bytesArray = new byte[Long.BYTES];
         Long val = null;
         try {
-            fis.read(bytesArray);
+            if (fis.read(bytesArray) == -1) {
+                discard();
+                return null;
+            }
             val = ByteUtils.bytesToLong(bytesArray);
             return val;
         } catch (IOException e) {
-            discard();
-            return null;
+            throw new RuntimeException("Error in read():" + e.getLocalizedMessage());
         }
     }
 

@@ -3,26 +3,23 @@ package pl.florsoft.puzzles.other.sortbigfile.testimpl;
 import pl.florsoft.puzzles.other.sortbigfile.BufferWriter;
 import pl.florsoft.puzzles.other.sortbigfile.ByteUtils;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.io.*;
 
 public class TestBufferWriter implements BufferWriter<Long> {
 
-    private Path filePath;
-    private ByteArrayOutputStream output;
+    private OutputStream output;
     private int fileNumber;
 
-    public TestBufferWriter(String fileName, int fileNumber) {
+    public TestBufferWriter(String fileName, int fileNumber, boolean useBuffer, long maxMemUsage) {
         this.fileNumber = fileNumber;
         try {
             File baseDir = new File(System.getProperty("java.io.tmpdir"));
             File file = new File(baseDir, fileName);
             file.deleteOnExit();
-            this.filePath = file.toPath();
-            this.output = new ByteArrayOutputStream();
+            this.output = new FileOutputStream(file);
+            if (useBuffer) {
+                this.output = new BufferedOutputStream(this.output, (int) Math.min(Integer.MAX_VALUE, maxMemUsage));
+            }
         } catch (Exception e) {
             throw new RuntimeException("Error in TestBufferWriter(): " + e.getLocalizedMessage());
         }
@@ -40,11 +37,12 @@ public class TestBufferWriter implements BufferWriter<Long> {
     @Override
     public int endWriting() {
         try {
-            Files.write(filePath, output.toByteArray());
-            return fileNumber;
+            output.flush();
+            output.close();
         } catch (IOException e) {
-            throw new RuntimeException("Error in reopenAsReader(): " + e.getLocalizedMessage());
+            throw new RuntimeException("Error in endWriting(): " + e.getLocalizedMessage());
         }
+        return fileNumber;
     }
 
 }

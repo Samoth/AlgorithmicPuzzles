@@ -4,6 +4,6 @@ public interface BufferManager<T> {
 
     BufferReader<T> getBufferReader(int group, int number);
 
-    BufferWriter<T> getBufferWriter(int group);
+    BufferWriter<T> getBufferWriter(int group, boolean useBuffer);
 
 }
