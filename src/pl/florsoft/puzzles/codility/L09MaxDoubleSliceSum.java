@@ -9,9 +9,8 @@ public class L09MaxDoubleSliceSum {
         int currentSum = 0, maxDoubleSlice = 0, minVal = A[1], prevSum = 0;
         for (int i = 1; i < A.length - 1; i++) {
             int val = A[i];
-            if (currentSum + val - minVal > 0) {
+            if (currentSum + val - minVal >= 0) {
                 currentSum += val;
-                maxDoubleSlice = Math.max(maxDoubleSlice, currentSum - minVal);
             } else {
                 currentSum = currentSum + val - prevSum;
                 prevSum = currentSum;
@@ -20,11 +19,12 @@ public class L09MaxDoubleSliceSum {
             }
             if (val < minVal) {
                 minVal = val;
-                prevSum = currentSum;
+                // prevSum = currentSum;
             }
+            maxDoubleSlice = Math.max(maxDoubleSlice, currentSum - minVal);
             // currentSum = Math.max(0, currentSum + val);
 
-            // System.out.println("val = " + val + ", minVal = " + minVal + ", currentSum = " + currentSum + ", max = " + maxDoubleSlice);
+            System.out.println("val = " + val + ", minVal = " + minVal + ", prevSum = " + prevSum + ", currentSum = " + currentSum + ", max = " + maxDoubleSlice);
 
         }
         return maxDoubleSlice;
