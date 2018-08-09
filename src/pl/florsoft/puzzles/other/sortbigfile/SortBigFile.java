@@ -23,38 +23,29 @@ public class SortBigFile {
     private int createSortedTmpFiles(Reader<Long> inputReader, BufferManager<Long> bufferManager,
                                      long maxMemUsage) {
         int maxElemsInOneFile = (int) (maxMemUsage / (Long.SIZE / Byte.SIZE));
-        Long[] tmpBuffer = new Long[maxElemsInOneFile];
+        long[] tmpBuffer = new long[maxElemsInOneFile];
         Long currentVal;
-        int savedValsInBuffer = 0, files = 0;
+        int valCnt = 0, files = 0;
         while ((currentVal = inputReader.read()) != null) {
-            tmpBuffer[savedValsInBuffer++] = currentVal;
-            if (savedValsInBuffer == maxElemsInOneFile) {
-                saveToSortedFile(tmpBuffer, bufferManager);
+            tmpBuffer[valCnt++] = currentVal;
+            if (valCnt == maxElemsInOneFile) {
+                saveToSortedFile(tmpBuffer, valCnt, bufferManager);
                 files++;
-                savedValsInBuffer = 0;
+                valCnt = 0;
             }
         }
-        if (savedValsInBuffer > 0) {
-            if (savedValsInBuffer < maxElemsInOneFile) {
-                tmpBuffer = createSmallerBuffer(tmpBuffer, savedValsInBuffer);
-            }
-            saveToSortedFile(tmpBuffer, bufferManager);
+        if (valCnt > 0) {
+            saveToSortedFile(tmpBuffer, valCnt, bufferManager);
             files++;
         }
         return files;
     }
 
-    private Long[] createSmallerBuffer(Long[] tmpBuffer, int savedValsInBuffer) {
-        Long[] newArray = new Long[savedValsInBuffer];
-        System.arraycopy(tmpBuffer, 0, newArray, 0, savedValsInBuffer);
-        return newArray;
-    }
-
-    private void saveToSortedFile(Long[] tmpBuffer, BufferManager<Long> bufferManager) {
-        Arrays.sort(tmpBuffer);
+    private void saveToSortedFile(long[] tmpBuffer, int valsToSort, BufferManager<Long> bufferManager) {
+        Arrays.sort(tmpBuffer, 0, valsToSort);
         BufferWriter<Long> bufferWriter = bufferManager.getBufferWriter(0, false);
-        for (Long val : tmpBuffer) {
-            bufferWriter.write(val);
+        for (int i = 0; i < valsToSort; i++) {
+            bufferWriter.write(tmpBuffer[i]);
         }
         bufferWriter.endWriting();
     }
