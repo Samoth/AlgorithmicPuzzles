@@ -66,23 +66,22 @@ public class SortBigFile {
         if (files == 0) {
             return;
         } else if (files <= 2) {
-            BufferReader<Long> firstReader = bufferManager.getBufferReader(0);
-            BufferReader<Long> secondReader = bufferManager.getBufferReader(1);
-            writeToOutput(outputWriter, firstReader, secondReader);
+            writeToOutput(outputWriter, bufferManager.getBufferReader(1), bufferManager.getBufferReader(2));
             return;
         }
-        int currentFile = 0, outputFiles = 0;
+        int currentFile = 1, outputFiles = 0;
         while (files > 0) {
-            BufferWriter<Long> output = bufferManager.getBufferWriter(true);
-            BufferReader<Long> firstReader = bufferManager.getBufferReader(currentFile++);
-            BufferReader<Long> secondReader = null;
-            files--;
-            if (files > 0) {
-                secondReader = bufferManager.getBufferReader(currentFile++);
+            if (files == 1) {
+                bufferManager.moveReaderToNextPhase(currentFile);
                 files--;
+            } else {
+                BufferWriter<Long> output = bufferManager.getBufferWriter(true);
+                BufferReader<Long> firstReader = bufferManager.getBufferReader(currentFile++);
+                BufferReader<Long> secondReader = bufferManager.getBufferReader(currentFile++);
+                writeToOutput(output, firstReader, secondReader);
+                output.endWriting();
+                files -= 2;
             }
-            writeToOutput(output, firstReader, secondReader);
-            output.endWriting();
             outputFiles++;
         }
         bufferManager.markAsEndPhaseWriting();
@@ -91,7 +90,7 @@ public class SortBigFile {
 
     private void writeToOutput(Writer<Long> outputWriter, BufferReader<Long> firstReader, BufferReader<Long> secondReader) {
         Long firstVal = firstReader.read();
-        Long secVal = secondReader != null ? secondReader.read() : null;
+        Long secVal = secondReader.read();
         while (firstVal != null || secVal != null) {
             if (firstVal != null && secVal != null) {
                 if (firstVal <= secVal) {

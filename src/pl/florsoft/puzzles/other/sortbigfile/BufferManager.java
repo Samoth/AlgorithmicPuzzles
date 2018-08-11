@@ -8,4 +8,6 @@ public interface BufferManager<T> {
 
     void markAsEndPhaseWriting();
 
+    void moveReaderToNextPhase(int number);
+
 }
