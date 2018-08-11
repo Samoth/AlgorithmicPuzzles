@@ -15,12 +15,12 @@ public class SortBigFile {
      */
     public void sortLargeFileOfInt64s(Reader<Long> inputReader, Writer<Long> outputWriter, BufferManager<Long> bufferManager,
                                       long maxMemUsage) {
-        int sortedTmpFiles = createSortedTmpFiles(inputReader, bufferManager, maxMemUsage);
+        int sortedTmpFiles = createSortedOutput(inputReader, bufferManager, maxMemUsage, outputWriter);
         mergeAndWriteToOutput(sortedTmpFiles, 0, outputWriter, bufferManager);
     }
 
-    private int createSortedTmpFiles(Reader<Long> inputReader, BufferManager<Long> bufferManager,
-                                     long maxMemUsage) {
+    private int createSortedOutput(Reader<Long> inputReader, BufferManager<Long> bufferManager,
+                                   long maxMemUsage, Writer<Long> outputWriter) {
         int maxElemsInOneFile = (int) (maxMemUsage / (Long.SIZE / Byte.SIZE));
         long[] tmpBuffer = new long[maxElemsInOneFile];
         Long currentVal;
@@ -34,8 +34,12 @@ public class SortBigFile {
             }
         }
         if (valCnt > 0) {
-            saveToSortedFile(tmpBuffer, valCnt, bufferManager);
-            files++;
+            if (files == 0) { // sort and write to outputWriter: there is no need to use tmp files
+                saveToSortedOutput(tmpBuffer, valCnt, outputWriter);
+            } else {
+                saveToSortedFile(tmpBuffer, valCnt, bufferManager);
+                files++;
+            }
         }
         return files;
     }
@@ -49,8 +53,17 @@ public class SortBigFile {
         bufferWriter.endWriting();
     }
 
+    private void saveToSortedOutput(long[] tmpBuffer, int valsToSort, Writer<Long> outputWriter) {
+        HeapSort.sort(tmpBuffer, 0, valsToSort);
+        for (int i = 0; i < valsToSort; i++) {
+            outputWriter.write(tmpBuffer[i]);
+        }
+    }
+
     private void mergeAndWriteToOutput(int files, int fileGroup, Writer<Long> outputWriter, BufferManager<Long> bufferManager) {
-        if (files <= 2) {
+        if (files == 0) {
+            return;
+        } else if (files <= 2) {
             BufferReader<Long> firstReader = bufferManager.getBufferReader(fileGroup, 0);
             BufferReader<Long> secondReader = null;
             if (files == 2) {
