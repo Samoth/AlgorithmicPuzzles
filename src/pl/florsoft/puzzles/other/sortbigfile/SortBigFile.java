@@ -16,7 +16,7 @@ public class SortBigFile {
     public void sortLargeFileOfInt64s(Reader<Long> inputReader, Writer<Long> outputWriter, BufferManager<Long> bufferManager,
                                       long maxMemUsage) {
         int sortedTmpFiles = createSortedOutput(inputReader, bufferManager, maxMemUsage, outputWriter);
-        mergeAndWriteToOutput(sortedTmpFiles, 0, outputWriter, bufferManager);
+        mergeAndWriteToOutput(sortedTmpFiles, outputWriter, bufferManager);
     }
 
     private int createSortedOutput(Reader<Long> inputReader, BufferManager<Long> bufferManager,
@@ -36,17 +36,19 @@ public class SortBigFile {
         if (valCnt > 0) {
             if (files == 0) { // sort and write to outputWriter: there is no need to use tmp files
                 saveToSortedOutput(tmpBuffer, valCnt, outputWriter);
+                return 0;
             } else {
                 saveToSortedFile(tmpBuffer, valCnt, bufferManager);
                 files++;
             }
         }
+        bufferManager.markAsEndPhaseWriting();
         return files;
     }
 
     private void saveToSortedFile(long[] tmpBuffer, int valsToSort, BufferManager<Long> bufferManager) {
         HeapSort.sort(tmpBuffer, 0, valsToSort);
-        BufferWriter<Long> bufferWriter = bufferManager.getBufferWriter(0, false);
+        BufferWriter<Long> bufferWriter = bufferManager.getBufferWriter(false);
         for (int i = 0; i < valsToSort; i++) {
             bufferWriter.write(tmpBuffer[i]);
         }
@@ -60,33 +62,31 @@ public class SortBigFile {
         }
     }
 
-    private void mergeAndWriteToOutput(int files, int fileGroup, Writer<Long> outputWriter, BufferManager<Long> bufferManager) {
+    private void mergeAndWriteToOutput(int files, Writer<Long> outputWriter, BufferManager<Long> bufferManager) {
         if (files == 0) {
             return;
         } else if (files <= 2) {
-            BufferReader<Long> firstReader = bufferManager.getBufferReader(fileGroup, 0);
-            BufferReader<Long> secondReader = null;
-            if (files == 2) {
-                secondReader = bufferManager.getBufferReader(fileGroup, 1);
-            }
+            BufferReader<Long> firstReader = bufferManager.getBufferReader(0);
+            BufferReader<Long> secondReader = bufferManager.getBufferReader(1);
             writeToOutput(outputWriter, firstReader, secondReader);
             return;
         }
         int currentFile = 0, outputFiles = 0;
         while (files > 0) {
-            BufferWriter<Long> output = bufferManager.getBufferWriter(fileGroup + 1, true);
-            BufferReader<Long> firstReader = bufferManager.getBufferReader(fileGroup, currentFile++);
+            BufferWriter<Long> output = bufferManager.getBufferWriter(true);
+            BufferReader<Long> firstReader = bufferManager.getBufferReader(currentFile++);
             BufferReader<Long> secondReader = null;
             files--;
             if (files > 0) {
-                secondReader = bufferManager.getBufferReader(fileGroup, currentFile++);
+                secondReader = bufferManager.getBufferReader(currentFile++);
                 files--;
             }
             writeToOutput(output, firstReader, secondReader);
             output.endWriting();
             outputFiles++;
         }
-        mergeAndWriteToOutput(outputFiles, fileGroup + 1, outputWriter, bufferManager);
+        bufferManager.markAsEndPhaseWriting();
+        mergeAndWriteToOutput(outputFiles, outputWriter, bufferManager);
     }
 
     private void writeToOutput(Writer<Long> outputWriter, BufferReader<Long> firstReader, BufferReader<Long> secondReader) {

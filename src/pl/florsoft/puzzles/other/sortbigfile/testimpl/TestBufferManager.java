@@ -13,6 +13,7 @@ public class TestBufferManager implements BufferManager<Long> {
     private Map<Integer, Integer> createdFiles = new HashMap<>();
     private long maxMemoryToUse;
     private long uuid;
+    private int actualWriterFileGroup = 0;
 
     public TestBufferManager(long maxMemoryToUse) {
         uuid = UUID.randomUUID().getLeastSignificantBits();
@@ -20,18 +21,24 @@ public class TestBufferManager implements BufferManager<Long> {
     }
 
     @Override
-    public BufferReader<Long> getBufferReader(int group, int number) {
-        return new TestBufferReader(createFileName(group, number));
+    public BufferReader<Long> getBufferReader(int number) {
+        return new TestBufferReader(createFileName(actualWriterFileGroup - 1, number));
     }
 
     @Override
-    public BufferWriter<Long> getBufferWriter(int fileGroup, boolean useBuffer) {
-        if (!createdFiles.containsKey(fileGroup)) {
-            createdFiles.put(fileGroup, -1);
+    public BufferWriter<Long> getBufferWriter(boolean useBuffer) {
+        if (!createdFiles.containsKey(actualWriterFileGroup)) {
+            createdFiles.put(actualWriterFileGroup, -1);
         }
-        Integer files = createdFiles.get(fileGroup);
-        createdFiles.put(fileGroup, ++files);
-        return new TestBufferWriter(createFileName(fileGroup, files), files, useBuffer, maxMemoryToUse);
+        Integer files = createdFiles.get(actualWriterFileGroup);
+        createdFiles.put(actualWriterFileGroup, ++files);
+        return new TestBufferWriter(createFileName(actualWriterFileGroup, files), files, useBuffer, maxMemoryToUse);
+    }
+
+    @Override
+    public void markAsEndPhaseWriting() {
+        createdFiles.remove(actualWriterFileGroup - 1);
+        actualWriterFileGroup++;
     }
 
     private String createFileName(int fileGroup, int fileNumber) {

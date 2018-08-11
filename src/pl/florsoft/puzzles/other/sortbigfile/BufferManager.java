@@ -2,8 +2,10 @@ package pl.florsoft.puzzles.other.sortbigfile;
 
 public interface BufferManager<T> {
 
-    BufferReader<T> getBufferReader(int group, int number);
+    BufferReader<T> getBufferReader(int number);
 
-    BufferWriter<T> getBufferWriter(int group, boolean useBuffer);
+    BufferWriter<T> getBufferWriter(boolean useBuffer);
+
+    void markAsEndPhaseWriting();
 
 }
