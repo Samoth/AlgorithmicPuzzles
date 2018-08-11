@@ -15,12 +15,12 @@ public class SortBigFile {
      */
     public void sortLargeFileOfInt64s(Reader<Long> inputReader, Writer<Long> outputWriter, BufferManager<Long> bufferManager,
                                       long maxMemUsage) {
-        int sortedTmpFiles = createSortedOutput(inputReader, bufferManager, maxMemUsage, outputWriter);
+        int sortedTmpFiles = writeSortedDataToOutput(inputReader, bufferManager, maxMemUsage, outputWriter);
         mergeAndWriteToOutput(sortedTmpFiles, outputWriter, bufferManager);
     }
 
-    private int createSortedOutput(Reader<Long> inputReader, BufferManager<Long> bufferManager,
-                                   long maxMemUsage, Writer<Long> outputWriter) {
+    private int writeSortedDataToOutput(Reader<Long> inputReader, BufferManager<Long> bufferManager,
+                                        long maxMemUsage, Writer<Long> outputWriter) {
         int maxElemsInOneFile = (int) (maxMemUsage / (Long.SIZE / Byte.SIZE));
         long[] tmpBuffer = new long[maxElemsInOneFile];
         Long currentVal;
