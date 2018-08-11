@@ -3,8 +3,7 @@ package pl.florsoft.puzzles.other.sortbigfile;
 import pl.florsoft.puzzles.other.sortbigfile.testimpl.OutputChecker;
 import pl.florsoft.puzzles.other.sortbigfile.testimpl.RandomLongGenerator;
 import pl.florsoft.puzzles.other.sortbigfile.testimpl.TestBufferManager;
-
-import java.util.Arrays;
+import pl.florsoft.puzzles.sorting.HeapSort;
 
 /**
  * Task: write a method to sort big file (bigger than available memory).
@@ -42,7 +41,7 @@ public class SortBigFile {
     }
 
     private void saveToSortedFile(long[] tmpBuffer, int valsToSort, BufferManager<Long> bufferManager) {
-        Arrays.sort(tmpBuffer, 0, valsToSort);
+        HeapSort.sort(tmpBuffer, 0, valsToSort);
         BufferWriter<Long> bufferWriter = bufferManager.getBufferWriter(0, false);
         for (int i = 0; i < valsToSort; i++) {
             bufferWriter.write(tmpBuffer[i]);
