@@ -1,7 +1,5 @@
 package pl.florsoft.puzzles.sorting;
 
-import java.util.Arrays;
-
 public class HeapSort {
 
     /**
@@ -18,38 +16,40 @@ public class HeapSort {
      * @param toIndex   last index to sort - exclusive
      */
     public static void sort(long[] array, int fromIndex, int toIndex) {
-        if (array.length <= 1) {
+        if (fromIndex > toIndex || toIndex > array.length || fromIndex < 0) {
+            throw new IllegalArgumentException();
+        } else if (toIndex - fromIndex <= 1) {
             return;
         }
-        buildHeap(array); // TODO add range: from, to
-        sortHeap(array);// TODO add range: from, to
+        buildHeap(array, fromIndex, toIndex);
+        sortHeap(array, fromIndex, toIndex);
     }
 
-    private static void buildHeap(long[] array) {
-        for (int i = 0; i < array.length; i++) {
-            shiftUp(array, i);
+    private static void buildHeap(long[] array, int fromIndex, int toIndex) {
+        for (int i = 0; i < toIndex - fromIndex; i++) {
+            shiftUp(array, i, fromIndex);
         }
     }
 
-    private static void shiftUp(long[] array, int idx) {
+    private static void shiftUp(long[] array, int idx, int prefix) {
         if (idx == 0) {
             return;
         }
         int parent = getParent(idx);
-        if (array[idx] > array[parent]) {
-            swap(array, idx, parent);
-            shiftUp(array, parent);
+        if (array[idx + prefix] > array[parent + prefix]) {
+            swap(array, idx + prefix, parent + prefix);
+            shiftUp(array, parent, prefix);
         }
     }
 
-    private static void sortHeap(long[] array) {
-        for (int i = array.length - 1; i > 0; i--) {
-            swap(array, 0, i);
-            shiftDown(array, 0, i);
+    private static void sortHeap(long[] array, int fromIndex, int toIndex) {
+        for (int i = toIndex - fromIndex - 1; i > 0; i--) {
+            swap(array, fromIndex, i + fromIndex);
+            shiftDown(array, 0, i, fromIndex);
         }
     }
 
-    private static void shiftDown(long[] array, int idx, int lastIdx) {
+    private static void shiftDown(long[] array, int idx, int lastIdx, int prefix) {
         int leftChild = getLeftChild(idx);
         int rightChild = getRightChild(idx);
         if (leftChild >= lastIdx) {
@@ -57,11 +57,11 @@ public class HeapSort {
         }
         int maxIdx = leftChild;
         if (rightChild < lastIdx) {
-            maxIdx = array[leftChild] >= array[rightChild] ? leftChild : rightChild;
+            maxIdx = array[leftChild + prefix] >= array[rightChild + prefix] ? leftChild : rightChild;
         }
-        if (array[idx] < array[maxIdx]) {
-            swap(array, idx, maxIdx);
-            shiftDown(array, maxIdx, lastIdx);
+        if (array[idx + prefix] < array[maxIdx + prefix]) {
+            swap(array, idx + prefix, maxIdx + prefix);
+            shiftDown(array, maxIdx, lastIdx, prefix);
         }
     }
 
@@ -81,13 +81,6 @@ public class HeapSort {
         long tmp = array[idx1];
         array[idx1] = array[idx2];
         array[idx2] = tmp;
-    }
-
-    public static void main(String[] args) {
-        long[] arr = new long[]{10, 4, 8, 5, 12, 2, 6, 11, 3, 9, 7, 1};
-        System.out.println("array before sort: " + Arrays.toString(arr));
-        sort(arr);
-        System.out.println("array after sort: " + Arrays.toString(arr));
     }
 
 }
