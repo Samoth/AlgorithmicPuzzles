@@ -19,4 +19,13 @@ public class L02OddOccurrencesInArray {
         }
         return oddNumbers.keySet().iterator().next(); // return first and only one element
     }
+
+    public int solution2(int[] A) {
+        int oddValue = 0;
+        for (int i = 0; i < A.length; i++) {
+            oddValue ^= A[i];
+        }
+        return oddValue;
+    }
+
 }

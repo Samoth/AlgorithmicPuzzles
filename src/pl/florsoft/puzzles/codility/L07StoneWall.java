@@ -31,4 +31,24 @@ public class L07StoneWall {
         }
         return H.length - blocksToMerge;
     }
+
+    public int solution2(int[] H) {
+        if (H == null || H.length == 0) {
+            return 0;
+        }
+        int result = 0;
+        Stack<Integer> heightStack = new Stack<>();
+        for (int i = 0; i < H.length; i++) {
+            int currentElement = H[i];
+            while (!heightStack.isEmpty() && currentElement < heightStack.peek()) {
+                heightStack.pop();
+            }
+            if (heightStack.isEmpty() || heightStack.peek() < currentElement) {
+                heightStack.push(currentElement);
+                result++;
+            }
+        }
+        return result;
+    }
+
 }

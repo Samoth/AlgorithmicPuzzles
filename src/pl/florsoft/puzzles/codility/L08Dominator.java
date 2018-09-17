@@ -31,4 +31,31 @@ public class L08Dominator {
         }
         return candidateOccures > A.length / 2 ? lastCorrectCandidateIndex : -1;
     }
+
+    public int solution2(int[] A) {
+        int candidate = 0, occurs = 0;
+        for (int i = 0; i < A.length; i++) {
+            if (occurs == 0) {
+                candidate = A[i];
+            }
+            occurs += candidate == A[i] ? 1 : -1;
+            if (occurs > A.length / 2) {
+                return i;
+            }
+        }
+        if (occurs == 0) {
+            return -1;
+        }
+        occurs = 0;
+        for (int i = 0; i < A.length; i++) {
+            if (A[i] == candidate) {
+                occurs++;
+                if (occurs > A.length / 2) {
+                    return i;
+                }
+            }
+        }
+        return -1;
+    }
+
 }
