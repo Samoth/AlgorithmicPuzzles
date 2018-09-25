@@ -32,7 +32,7 @@ public class Stack<E> {
     }
 
     @SuppressWarnings("unchecked")
-    public E peak() {
+    public E peek() {
         if (isEmpty()) {
             throw new EmptyStackException();
         }
