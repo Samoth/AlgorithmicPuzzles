@@ -2,20 +2,20 @@ package pl.florsoft.puzzles.datastructure;
 
 import java.util.NoSuchElementException;
 
-public class LinkedList<T> {
+public class LinkedList<E> {
 
     private Node head;
     private Node tail;
     private int size;
 
-    public void addFirst(T val) {
+    public void addFirst(E val) {
         Node newNode = new Node(val);
         newNode.next = head;
         head = newNode;
         size++;
     }
 
-    public void add(T val) {
+    public void add(E val) {
         Node newNode = new Node(val);
         if (isEmpty()) {
             head = newNode;
@@ -27,21 +27,21 @@ public class LinkedList<T> {
         size++;
     }
 
-    public T getFirst() {
+    public E getFirst() {
         if (isEmpty()) {
             throw new NoSuchElementException();
         }
         return head.value;
     }
 
-    public T getLast() {
+    public E getLast() {
         if (isEmpty()) {
             throw new NoSuchElementException();
         }
         return tail.value;
     }
 
-    public T get(int idx) {
+    public E get(int idx) {
         if (idx >= size || idx < 0) {
             throw new NoSuchElementException();
         }
@@ -52,11 +52,11 @@ public class LinkedList<T> {
         return node.value;
     }
 
-    public T removeFirst() {
+    public E removeFirst() {
         if (isEmpty()) {
             throw new NoSuchElementException();
         }
-        T node = getFirst();
+        E node = getFirst();
         if (size == 1) {
             head = null;
             tail = null;
@@ -68,11 +68,11 @@ public class LinkedList<T> {
         return node;
     }
 
-    public T removeLast() {
+    public E removeLast() {
         if (isEmpty()) {
             throw new NoSuchElementException();
         }
-        T node = getLast();
+        E node = getLast();
         if (size == 1) {
             head = null;
             tail = null;
@@ -83,7 +83,7 @@ public class LinkedList<T> {
         return node;
     }
 
-    public T remove(T val) {
+    public E remove(E val) {
         if (isEmpty()) {
             throw new NoSuchElementException();
         }
@@ -107,7 +107,7 @@ public class LinkedList<T> {
         return elem.value;
     }
 
-    public T remove(int idx) {
+    public E remove(int idx) {
         if (idx >= size || idx < 0) {
             throw new NoSuchElementException();
         }
@@ -128,7 +128,7 @@ public class LinkedList<T> {
         return elem.value;
     }
 
-    public boolean contains(T val) {
+    public boolean contains(E val) {
         if (isEmpty()) {
             return false;
         }
@@ -168,11 +168,11 @@ public class LinkedList<T> {
     }
 
     class Node {
-        public T value;
+        public E value;
         public Node prev;
         public Node next;
 
-        public Node(T val) {
+        public Node(E val) {
             this.value = val;
         }
     }

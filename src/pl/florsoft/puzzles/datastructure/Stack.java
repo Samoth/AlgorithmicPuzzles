@@ -2,7 +2,7 @@ package pl.florsoft.puzzles.datastructure;
 
 import java.util.EmptyStackException;
 
-public class Stack<T> {
+public class Stack<E> {
 
     private int size = 0;
     private int maxSize;
@@ -14,16 +14,16 @@ public class Stack<T> {
     }
 
     @SuppressWarnings("unchecked")
-    public T pop() {
+    public E pop() {
         if (isEmpty()) {
             throw new EmptyStackException();
         }
-        T elem = (T) values[size - 1];
+        E elem = (E) values[size - 1];
         size--;
         return elem;
     }
 
-    public void push(T val) {
+    public void push(E val) {
         if (size + 1 > maxSize) {
             throw new ArrayIndexOutOfBoundsException();
         }
@@ -32,11 +32,11 @@ public class Stack<T> {
     }
 
     @SuppressWarnings("unchecked")
-    public T peak() {
+    public E peak() {
         if (isEmpty()) {
             throw new EmptyStackException();
         }
-        return (T) values[size - 1];
+        return (E) values[size - 1];
     }
 
     public int size() {
