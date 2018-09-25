@@ -6,18 +6,19 @@ public class Stack<T> {
 
     private int size = 0;
     private int maxSize;
-    private T[] values;
+    private Object[] values;
 
     public Stack(int maxSize) {
         this.maxSize = maxSize;
-        this.values = (T[]) new Object[maxSize];
+        this.values = new Object[maxSize];
     }
 
+    @SuppressWarnings("unchecked")
     public T pop() {
         if (isEmpty()) {
             throw new EmptyStackException();
         }
-        T elem = values[size - 1];
+        T elem = (T) values[size - 1];
         size--;
         return elem;
     }
@@ -30,11 +31,12 @@ public class Stack<T> {
         size++;
     }
 
+    @SuppressWarnings("unchecked")
     public T peak() {
         if (isEmpty()) {
             throw new EmptyStackException();
         }
-        return values[size - 1];
+        return (T) values[size - 1];
     }
 
     public int size() {
