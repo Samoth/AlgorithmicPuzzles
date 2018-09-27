@@ -35,7 +35,7 @@ public class BinaryTree<E> {
         }
     }
 
-    class BinaryTreeNode<E> {
+    static class BinaryTreeNode<E> {
 
         public E value;
         public BinaryTreeNode<E> left;
