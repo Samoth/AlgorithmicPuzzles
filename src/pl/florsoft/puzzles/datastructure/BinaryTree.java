@@ -2,12 +2,12 @@ package pl.florsoft.puzzles.datastructure;
 
 public class BinaryTree<E> {
 
-    public BinaryTreeNode root;
+    public BinaryTreeNode<E> root;
 
     public BinaryTree() {
     }
 
-    public BinaryTree(BinaryTreeNode root) {
+    public BinaryTree(BinaryTreeNode<E> root) {
         this.root = root;
     }
 
