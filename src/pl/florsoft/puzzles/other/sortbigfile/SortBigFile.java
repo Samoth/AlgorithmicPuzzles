@@ -3,7 +3,7 @@ package pl.florsoft.puzzles.other.sortbigfile;
 import pl.florsoft.puzzles.other.sortbigfile.testimpl.OutputChecker;
 import pl.florsoft.puzzles.other.sortbigfile.testimpl.RandomLongGenerator;
 import pl.florsoft.puzzles.other.sortbigfile.testimpl.TestBufferManager;
-import pl.florsoft.puzzles.sorting.HeapSort;
+import pl.florsoft.puzzles.algorithms.sorting.HeapSort;
 
 /**
  * Task: write a method to sort big file (bigger than available memory).

@@ -1,11 +1,14 @@
-package pl.florsoft.puzzles.sorting;
+package pl.florsoft.puzzles.algorithms.sorting;
 
+/**
+ * Heap sort algorithm.
+ * Time complexity: O(n*logn).
+ * Memory complexity: O(1).
+ */
 public class HeapSort {
 
     /**
      * Sort array of longs using heap sort algorithm.
-     * Time complexity: O(n*logn).
-     * Memory complexity: O(1).
      */
     public static void sort(long[] array) {
         sort(array, 0, array.length);
