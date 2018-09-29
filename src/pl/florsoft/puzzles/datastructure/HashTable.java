@@ -15,6 +15,7 @@ public class HashTable<K extends Comparable<K>, V> {
         this(DEFAULT_CAPACITY);
     }
 
+    @SuppressWarnings("unchecked")
     public HashTable(int capacity) {
         this.capacity = capacity;
         values = new List[capacity];
