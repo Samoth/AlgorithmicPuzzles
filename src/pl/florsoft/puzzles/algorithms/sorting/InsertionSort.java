@@ -1,5 +1,10 @@
 package pl.florsoft.puzzles.algorithms.sorting;
 
+/**
+ * Insertion sort algorithm.
+ * Time complexity: O(n*n).
+ * Memory complexity: O(1).
+ */
 public class InsertionSort {
 
     public static void sort(int[] array) {
