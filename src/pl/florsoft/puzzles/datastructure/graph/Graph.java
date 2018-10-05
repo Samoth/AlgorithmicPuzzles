@@ -1,4 +1,4 @@
-package pl.florsoft.puzzles.datastructure;
+package pl.florsoft.puzzles.datastructure.graph;
 
 import java.util.ArrayList;
 import java.util.List;

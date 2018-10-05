@@ -1,7 +1,7 @@
 package pl.florsoft.puzzles.algorithms.searching;
 
-import pl.florsoft.puzzles.datastructure.Graph;
-import pl.florsoft.puzzles.datastructure.GraphNode;
+import pl.florsoft.puzzles.datastructure.graph.Graph;
+import pl.florsoft.puzzles.datastructure.graph.GraphNode;
 import pl.florsoft.puzzles.datastructure.Queue;
 
 public class BreadthFirstSearch<E> {

@@ -1,4 +1,4 @@
-package pl.florsoft.puzzles.datastructure;
+package pl.florsoft.puzzles.datastructure.tree;
 
 import java.util.HashMap;
 

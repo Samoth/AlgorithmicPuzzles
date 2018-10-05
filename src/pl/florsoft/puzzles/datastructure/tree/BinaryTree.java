@@ -1,4 +1,4 @@
-package pl.florsoft.puzzles.datastructure;
+package pl.florsoft.puzzles.datastructure.tree;
 
 public class BinaryTree<E> {
 

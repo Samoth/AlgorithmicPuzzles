@@ -1,7 +1,7 @@
 package pl.florsoft.puzzles.algorithms.searching;
 
-import pl.florsoft.puzzles.datastructure.Graph;
-import pl.florsoft.puzzles.datastructure.GraphNode;
+import pl.florsoft.puzzles.datastructure.graph.Graph;
+import pl.florsoft.puzzles.datastructure.graph.GraphNode;
 
 import java.util.List;
 import java.util.ListIterator;
