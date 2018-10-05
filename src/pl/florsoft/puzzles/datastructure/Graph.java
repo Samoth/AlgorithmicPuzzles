@@ -1,20 +1,28 @@
 package pl.florsoft.puzzles.datastructure;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Graph<E> {
 
-    public List<GraphNode> nodes;
+    private List<GraphNode<E>> nodes;
 
-    static class GraphNode<E> {
+    public Graph() {
+    }
 
-        public E value;
-        public List<GraphNode> children;
+    public Graph(List<GraphNode<E>> nodes) {
+        this.nodes = nodes;
+    }
 
-        public GraphNode(E value) {
-            this.value = value;
+    public void addNode(GraphNode<E> node) {
+        if (nodes == null) {
+            nodes = new ArrayList<>();
         }
+        nodes.add(node);
+    }
 
+    public List<GraphNode<E>> getNodes() {
+        return nodes;
     }
 
 }
