@@ -49,4 +49,42 @@ public class MergeSort {
         }
     }
 
+    public static void sort(long[] array) {
+        if (array == null || array.length <= 1) {
+            return;
+        }
+        long[] tmpArray = new long[array.length];
+        System.arraycopy(array, 0, tmpArray, 0, array.length);
+        sort(tmpArray, array, 0, array.length - 1);
+    }
+
+    private static void sort(long[] source, long[] target, int start, int end) {
+        if (start == end) {
+            target[start] = source[start];
+        } else if (start < end) {
+            int middle = (end - start) / 2 + start;
+            sort(target, source, start, middle);
+            sort(target, source, middle + 1, end);
+            merge(source, target, start, middle, end);
+        }
+    }
+
+    private static void merge(long[] source, long[] target, int start, int middle, int end) {
+        int i = start;
+        int j = middle + 1;
+        while (i < middle + 1 || j < end + 1) {
+            if (i >= middle + 1) {
+                target[start++] = source[j++];
+            } else if (j >= end + 1) {
+                target[start++] = source[i++];
+            } else {
+                if (source[i] < source[j]) {
+                    target[start++] = source[i++];
+                } else {
+                    target[start++] = source[j++];
+                }
+            }
+        }
+    }
+
 }

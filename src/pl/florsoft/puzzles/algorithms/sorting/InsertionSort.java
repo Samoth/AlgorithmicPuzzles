@@ -22,4 +22,19 @@ public class InsertionSort {
         }
     }
 
+    public static void sort(long[] array) {
+        if (array == null || array.length <= 1) {
+            return;
+        }
+        for (int i = 1; i < array.length; i++) {
+            long currentElem = array[i];
+            int j = i - 1;
+            while (j >= 0 && currentElem < array[j]) {
+                array[j + 1] = array[j];
+                j--;
+            }
+            array[j + 1] = currentElem;
+        }
+    }
+
 }
