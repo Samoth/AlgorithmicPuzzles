@@ -18,8 +18,10 @@ public class SortingTest {
             sort("HeapSort", array, HeapSort::sort);
             sort("InsertionSort", array, InsertionSort::sort);
             sort("MergeSort", array, MergeSort::sort);
+            sort("ParallelMergeSort", array, ParallelMergeSort::sort);
             sort("QuickSort", array, QuickSort::sort);
             sort("SelectionSort", array, SelectionSort::sort);
+            sort("Java DualPivotQuickSort", array, Arrays::sort);
         }
     }
 
