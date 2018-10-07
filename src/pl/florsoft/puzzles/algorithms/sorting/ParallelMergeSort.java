@@ -42,17 +42,11 @@ public class ParallelMergeSort {
     private static void merge(long[] source, long[] target, int start, int middle, int end) {
         int i = start;
         int j = middle;
-        while (i < middle || j < end) {
-            if (i >= middle) {
-                target[start++] = source[j++];
-            } else if (j >= end) {
+        while (start < end) {
+            if (i < middle && (j >= end || source[i] < source[j])) {
                 target[start++] = source[i++];
             } else {
-                if (source[i] < source[j]) {
-                    target[start++] = source[i++];
-                } else {
-                    target[start++] = source[j++];
-                }
+                target[start++] = source[j++];
             }
         }
     }
