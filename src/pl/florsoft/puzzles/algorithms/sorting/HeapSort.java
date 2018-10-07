@@ -1,8 +1,5 @@
 package pl.florsoft.puzzles.algorithms.sorting;
 
-import java.util.Random;
-import java.util.function.Supplier;
-
 /**
  * Heap sort algorithm.
  * Time complexity: O(n*logn).

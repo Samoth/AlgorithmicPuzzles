@@ -7,37 +7,39 @@ package pl.florsoft.puzzles.algorithms.sorting;
  */
 public class MergeSort {
 
+    /**
+     * Sort array of ints using merge sort algorithm.
+     */
     public static void sort(int[] array) {
         if (array == null || array.length <= 1) {
             return;
         }
         int[] tmpArray = new int[array.length];
         System.arraycopy(array, 0, tmpArray, 0, array.length);
-        sort(tmpArray, array, 0, array.length - 1);
+        sort(tmpArray, array, 0, array.length);
     }
 
     /**
      * @param start first index to sort - inclusive
-     * @param end   last index to sort - inclusive
+     * @param end   last index to sort - exclusive
      */
     private static void sort(int[] source, int[] target, int start, int end) {
-        if (start == end) {
-            target[start] = source[start];
-        } else if (start < end) {
-            int middle = (end - start) / 2 + start;
-            sort(target, source, start, middle);
-            sort(target, source, middle + 1, end);
-            merge(source, target, start, middle, end);
+        if (end - start < 2) {
+            return;
         }
+        int middle = (start + end) / 2;
+        sort(target, source, start, middle);
+        sort(target, source, middle, end);
+        merge(source, target, start, middle, end);
     }
 
     private static void merge(int[] source, int[] target, int start, int middle, int end) {
         int i = start;
-        int j = middle + 1;
-        while (i < middle + 1 || j < end + 1) {
-            if (i >= middle + 1) {
+        int j = middle;
+        while (i < middle || j < end) {
+            if (i >= middle) {
                 target[start++] = source[j++];
-            } else if (j >= end + 1) {
+            } else if (j >= end) {
                 target[start++] = source[i++];
             } else {
                 if (source[i] < source[j]) {
@@ -49,33 +51,39 @@ public class MergeSort {
         }
     }
 
+    /**
+     * Sort array of longs using merge sort algorithm.
+     */
     public static void sort(long[] array) {
         if (array == null || array.length <= 1) {
             return;
         }
         long[] tmpArray = new long[array.length];
         System.arraycopy(array, 0, tmpArray, 0, array.length);
-        sort(tmpArray, array, 0, array.length - 1);
+        sort(tmpArray, array, 0, array.length);
     }
 
+    /**
+     * @param start first index to sort - inclusive
+     * @param end   last index to sort - exclusive
+     */
     private static void sort(long[] source, long[] target, int start, int end) {
-        if (start == end) {
-            target[start] = source[start];
-        } else if (start < end) {
-            int middle = (end - start) / 2 + start;
-            sort(target, source, start, middle);
-            sort(target, source, middle + 1, end);
-            merge(source, target, start, middle, end);
+        if (end - start < 2) {
+            return;
         }
+        int middle = (start + end) / 2;
+        sort(target, source, start, middle);
+        sort(target, source, middle, end);
+        merge(source, target, start, middle, end);
     }
 
     private static void merge(long[] source, long[] target, int start, int middle, int end) {
         int i = start;
-        int j = middle + 1;
-        while (i < middle + 1 || j < end + 1) {
-            if (i >= middle + 1) {
+        int j = middle;
+        while (i < middle || j < end) {
+            if (i >= middle) {
                 target[start++] = source[j++];
-            } else if (j >= end + 1) {
+            } else if (j >= end) {
                 target[start++] = source[i++];
             } else {
                 if (source[i] < source[j]) {

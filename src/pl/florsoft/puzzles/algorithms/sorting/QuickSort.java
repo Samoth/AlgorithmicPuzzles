@@ -7,6 +7,9 @@ package pl.florsoft.puzzles.algorithms.sorting;
  */
 public class QuickSort {
 
+    /**
+     * Sort array of ints using quick sort algorithm.
+     */
     public static void sort(int[] array) {
         if (array == null || array.length <= 1) {
             return;
@@ -56,6 +59,9 @@ public class QuickSort {
         array[secIdx] = tmp;
     }
 
+    /**
+     * Sort array of longs using quick sort algorithm.
+     */
     public static void sort(long[] array) {
         if (array == null || array.length <= 1) {
             return;
@@ -63,6 +69,10 @@ public class QuickSort {
         sort(array, 0, array.length - 1);
     }
 
+    /**
+     * @param fromIndex first index to sort - inclusive
+     * @param toIndex   last index to sort - inclusive
+     */
     private static void sort(long[] array, int fromIndex, int toIndex) {
         if (fromIndex < toIndex) {
             int p = partition(array, fromIndex, toIndex);

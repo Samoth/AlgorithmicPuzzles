@@ -7,6 +7,9 @@ package pl.florsoft.puzzles.algorithms.sorting;
  */
 public class SelectionSort {
 
+    /**
+     * Sort array of ints using selection sort algorithm.
+     */
     public static void sort(int[] array) {
         if (array == null || array.length <= 1) {
             return;
@@ -26,6 +29,9 @@ public class SelectionSort {
         }
     }
 
+    /**
+     * Sort array of longs using selection sort algorithm.
+     */
     public static void sort(long[] array) {
         if (array == null || array.length <= 1) {
             return;

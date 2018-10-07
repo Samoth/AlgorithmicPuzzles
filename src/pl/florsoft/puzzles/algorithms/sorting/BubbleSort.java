@@ -7,6 +7,9 @@ package pl.florsoft.puzzles.algorithms.sorting;
  */
 public class BubbleSort {
 
+    /**
+     * Sort array of ints using bubble sort algorithm.
+     */
     public static void sort(int[] array) {
         if (array == null || array.length <= 1) {
             return;
@@ -22,6 +25,9 @@ public class BubbleSort {
         }
     }
 
+    /**
+     * Sort array of longs using bubble sort algorithm.
+     */
     public static void sort(long[] array) {
         if (array == null || array.length <= 1) {
             return;
