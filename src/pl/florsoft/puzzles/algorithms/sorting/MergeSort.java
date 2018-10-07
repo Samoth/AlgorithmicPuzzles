@@ -14,9 +14,7 @@ public class MergeSort {
         if (array == null || array.length <= 1) {
             return;
         }
-        int[] tmpArray = new int[array.length];
-        System.arraycopy(array, 0, tmpArray, 0, array.length);
-        sort(tmpArray, array, 0, array.length);
+        sort(new int[array.length], array, 0, array.length);
     }
 
     /**
@@ -52,9 +50,7 @@ public class MergeSort {
         if (array == null || array.length <= 1) {
             return;
         }
-        long[] tmpArray = new long[array.length];
-        System.arraycopy(array, 0, tmpArray, 0, array.length);
-        sort(tmpArray, array, 0, array.length);
+        sort(new long[array.length], array, 0, array.length);
     }
 
     /**
