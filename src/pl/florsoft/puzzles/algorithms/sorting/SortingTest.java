@@ -12,7 +12,7 @@ public class SortingTest {
 //                1000000, 5000000, 10000000, 15000000, 20000000, 25000000, 30000000, 35000000, 40000000, 45000000, 50000000
         };
         for (int elements : elementsTestCases) {
-            System.out.println("elements = " + elements);
+//            System.out.println("elements = " + elements);
 //            int[] array = generateIntArray(elements);
             long[] array = generateLongArray(elements);
             sort("BubbleSort", array, BubbleSort::sort);
@@ -29,9 +29,6 @@ public class SortingTest {
     }
 
     private static void sort(String algorithmName, int[] array, Consumer<int[]> consumer) {
-        System.gc();
-        System.gc();
-        System.gc();
         int[] arrayToSort = createArrayCopy(array);
         long start = System.nanoTime();
         consumer.accept(arrayToSort);
@@ -40,9 +37,6 @@ public class SortingTest {
         System.out.println(algorithmName + " - " + (duration / 1000000) + " ms");
 //        System.out.print((duration / 1000000) + "\t");
         checkCorrectness(algorithmName, arrayToSort);
-        System.gc();
-        System.gc();
-        System.gc();
     }
 
     private static int[] createArrayCopy(int[] array) {
@@ -65,13 +59,19 @@ public class SortingTest {
     }
 
     private static void sort(String algorithmName, long[] array, Consumer<long[]> consumer) {
+        // JVM warm up
         long[] arrayToSort = createArrayCopy(array);
+        consumer.accept(arrayToSort);
+        arrayToSort = createArrayCopy(array);
+        consumer.accept(arrayToSort);
+        //
+        arrayToSort = createArrayCopy(array);
         long start = System.nanoTime();
         consumer.accept(arrayToSort);
         long end = System.nanoTime();
         long duration = end - start;
-        System.out.println(algorithmName + " - " + (duration / 1000000) + " ms");
-//        System.out.print((duration / 1000000) + "\t");
+//        System.out.println(algorithmName + " - " + (duration / 1000000) + " ms");
+        System.out.print((duration / 1000000) + "\t");
         checkCorrectness(algorithmName, arrayToSort);
     }
 
@@ -85,7 +85,7 @@ public class SortingTest {
             }
             currentVal = val;
         }
-        System.out.println(algorithmName + "--> SORTING CORRECT");
+//        System.out.println(algorithmName + "--> SORTING CORRECT");
     }
 
     private static long[] createArrayCopy(long[] array) {
