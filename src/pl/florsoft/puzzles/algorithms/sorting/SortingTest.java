@@ -23,7 +23,7 @@ public class SortingTest {
             sort("Java DualPivotQuickSort", array, Arrays::sort);
             sort("ParallelMergeSort", array, ParallelMergeSort::sort);
             sort("SelectionSort", array, SelectionSort::sort);
-//            sort("ForkedMergeSort", array, ForkedMergeSort::sort);
+            sort("ForkedMergeSort", array, ForkedMergeSort::sort);
             System.out.println();
         }
     }
