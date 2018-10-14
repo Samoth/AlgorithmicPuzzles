@@ -6,10 +6,10 @@ package pl.florsoft.puzzles.codility;
 public class L11CountNonDivisible {
 
     public int[] solution(int[] A) {
-        int[] occurences = new int[2 * A.length + 1];
+        int[] occurrences = new int[2 * A.length + 1];
         int[] result = new int[A.length];
         for (int val : A) {
-            occurences[val] = occurences[val] + 1;
+            occurrences[val] = occurrences[val] + 1;
         }
         for (int i = 0; i < A.length; i++) {
             int val = A[i];
@@ -17,9 +17,9 @@ public class L11CountNonDivisible {
             int currentCnt = 0;
             while (j * j <= val && j * j > 0) {
                 if (val % j == 0) {
-                    currentCnt += occurences[j];
+                    currentCnt += occurrences[j];
                     if (j != val / j) {
-                        currentCnt += occurences[val / j];
+                        currentCnt += occurrences[val / j];
                     }
                 }
                 j++;
