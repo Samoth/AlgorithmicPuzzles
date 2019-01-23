@@ -4,7 +4,6 @@ import pl.florsoft.puzzles.datastructure.graph.Graph;
 import pl.florsoft.puzzles.datastructure.graph.GraphNode;
 
 import java.util.List;
-import java.util.ListIterator;
 
 public class DepthFirstSearch<E> {
 
@@ -16,20 +15,17 @@ public class DepthFirstSearch<E> {
     }
 
     private GraphNode find(List<GraphNode<E>> graphNodes, E value) {
-        GraphNode node = null;
-        ListIterator<GraphNode<E>> iterator = graphNodes.listIterator();
-        while (node == null && iterator.hasNext()) {
-            GraphNode<E> childNode = iterator.next();
+        for (GraphNode<E> childNode : graphNodes) {
             if (!childNode.visited) {
                 childNode.visited = true;
                 if (childNode.value.equals(value)) {
-                    node = childNode;
+                    return childNode;
                 } else if (childNode.hasChildren()) {
-                    node = find(childNode.children, value);
+                    return find(childNode.children, value);
                 }
             }
         }
-        return node;
+        return null;
     }
 
 }
